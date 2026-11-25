@@ -1,0 +1,19 @@
+name: reforecast
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - numpy
+  - pandas
+  - xarray>=2025.1
+  - scipy
+  - zarr>=3.0
+  - dask
+  - distributed
+  - s3fs
+  - cfgrib
+  - eccodes
+  - awscli
+  - pip
+  - pip:
+      - ecmwf-api-client

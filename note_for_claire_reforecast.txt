@@ -1,0 +1,15 @@
+Hi Claire, here is the next piece to hand over: the ECMWF reforecast download and bias update. the backfill will take a while, but these are just stores sitting on the s3 bucket and dont need to go into snoflake.
+
+Repo: https://github.com/WillyChap/reforecast_download_atx (the README has the setup steps).
+
+What it does: downloads the ECMWF EC46 reforecasts (new model cycle 50r1) from MARS into s3://atx-weather-consulting/EC_Hindcast/hindcast_50r1/, then updates the bias fields that the bias-corrected forecasts use (s3://atx-weather-consulting/EC46_Bias_50r1_leadsmooth/). Every step skips finished work, so it can be stopped and restarted at any point.
+
+What I need from you:
+1. A small instance in us-east-1: 2 vCPU, 16 GB memory, 50 GB disk (for example r6i.large).
+2. S3 access for that instance to s3://atx-weather-consulting that does not expire. This is the open question; an IAM instance role is probably the way, but your call.
+3. The ECMWF key: log in at https://api.ecmwf.int/v1/key/ with the company ECMWF account and save it as ~/.ecmwfapirc (README step 2).
+4. Run the backfill once in tmux (about 90 dates, likely several days), then set the cron line from the README to run every two weeks.
+
+Each run picks up the reforecast dates ECMWF has published since the last one and updates only the bias fields they affect. ECMWF publishes reforecasts ahead of the forecasts they serve, so a run every two weeks keeps the bias current.
+
+Storage will grow to roughly 1-4 TB by May 2027, when a full year of reforecast dates is in. After that the job only adds a few dates per run.
