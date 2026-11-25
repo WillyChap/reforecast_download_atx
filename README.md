@@ -28,9 +28,9 @@ ECMWF publishes a reforecast for every odd day of the month, 10 past years each,
    ```bash
    chmod 600 ~/.ecmwfapirc
    ```
-3. S3 access. The instance needs read and write access to `s3://atx-weather-consulting`. **Open question:** how to give it credentials that do not expire (for example an IAM instance role). Check with `aws s3 ls s3://atx-weather-consulting/`.
+3. S3 access. The instance needs read and write access to `s3://atx-weather-consulting`. **Question!!!:** how to give it credentials that do not expire (for example an IAM instance role). Check with `aws s3 ls s3://atx-weather-consulting/`. Do you have a good solution for this? Like a permanent credential?? I have limited aws s3 experience. 
 
-   **Known problem with `aws sso login`:** an SSO login expires after a few hours, and every S3 read or write then fails with `Token has expired and refresh failed`. This happened repeatedly while building this repo. With SSO, `ops/run.sh` pauses and checks every 5 minutes until someone runs `aws sso login` again, so nothing is lost, but the backfill stalls each time and cron runs stall until a login. Credentials that do not expire avoid this.
+   **Problem with `aws sso login`:** an SSO login expires after a few hours, and every S3 read or write then fails with `Token has expired and refresh failed`. This happened repeatedly while building this repo. With SSO, `ops/run.sh` pauses and checks every 5 minutes until someone runs `aws sso login` again, so nothing is lost, but the backfill stalls each time and cron runs stall until a login. Credentials that do not expire avoid this. **We should prioritize the newest hindcast/reforecasts so we can bias correct the real-time forecast ASAP.**
 4. Test both:
    ```bash
    cd src
